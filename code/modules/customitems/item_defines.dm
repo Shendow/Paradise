@@ -1050,7 +1050,7 @@
 
 /obj/item/clothing/suit/jacket/dtx //AffectedArc07: DTX
 	name = "telecommunications bomber jacket"
-	desc = "Looks like something only a nerd would buy. Has a tag inside reading <i>Property of DTX</i>."
+	desc = "Looks like something only a nerd would buy. Has a tag inside reading <i>Property of a big nerd</i>."
 	icon = 'icons/obj/custom_items.dmi'
 	icon_state = "dtxbomber"
 	item_state = "dtxbomber"
