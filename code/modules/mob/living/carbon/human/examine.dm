@@ -280,15 +280,15 @@
 
 	switch(wetlevel)
 		if(1)
-			msg += "[p_they(TRUE)] looks a bit damp.\n"
+			msg += "[p_they(TRUE)] look[p_s()] a bit damp.\n"
 		if(2)
-			msg += "[p_they(TRUE)] looks a little bit wet.\n"
+			msg += "[p_they(TRUE)] look[p_s()] a little bit wet.\n"
 		if(3)
-			msg += "[p_they(TRUE)] looks wet.\n"
+			msg += "[p_they(TRUE)] look[p_s()] wet.\n"
 		if(4)
-			msg += "[p_they(TRUE)] looks very wet.\n"
+			msg += "[p_they(TRUE)] look[p_s()] very wet.\n"
 		if(5)
-			msg += "[p_they(TRUE)] looks absolutely soaked.\n"
+			msg += "[p_they(TRUE)] look[p_s()] absolutely soaked.\n"
 
 	if(nutrition < NUTRITION_LEVEL_HYPOGLYCEMIA)
 		msg += "[p_they(TRUE)] [p_are()] severely malnourished.\n"
