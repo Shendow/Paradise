@@ -30,6 +30,8 @@
 	var/light_intensity = 2
 	var/low_fuel_changes_icon = TRUE//More than one icon_state due to low fuel?
 	var/progress_flash_divisor = 10 //Length of time between each "eye flash"
+	/// Lazy list of active welding effects.
+	var/list/obj/effect/particle_system/welding_spark/vfx = null
 
 /obj/item/weldingtool/Initialize(mapload)
 	..()
@@ -119,12 +121,18 @@
 	remove_fuel(amount)
 	return TRUE
 
-/obj/item/weldingtool/use_tool(target, user, delay, amount, volume, datum/callback/extra_checks)
+/obj/item/weldingtool/use_tool(atom/target, user, delay, amount, volume, datum/callback/extra_checks)
+	if(!LAZYACCESS(vfx, target.UID()))
+		LAZYSET(vfx, target.UID(), new /obj/effect/particle_system/welding_spark(get_turf(target), get_turf(user), delay * toolspeed))
 	var/did_thing = ..()
 	if(did_thing)
 		remove_fuel(1) //Consume some fuel after we do a welding action
 	if(delay)
 		progress_flash_divisor = initial(progress_flash_divisor)
+	var/obj/effect/particle_system/welding_spark/effect = LAZYACCESS(vfx, target.UID())
+	if(effect)
+		qdel(effect)
+		vfx -= target.UID()
 	return did_thing
 
 /obj/item/weldingtool/tool_check_callback(mob/living/user, amount, datum/callback/extra_checks)
