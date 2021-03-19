@@ -31335,8 +31335,8 @@
 	},
 /obj/effect/spawner/window/reinforced,
 /obj/structure/cable{
-	icon_state = "0-4";
-	d2 = 4
+	d2 = 4;
+	icon_state = "0-4"
 	},
 /obj/machinery/status_display{
 	density = 0;
@@ -31386,8 +31386,8 @@
 	},
 /obj/effect/spawner/window/reinforced,
 /obj/structure/cable{
-	icon_state = "0-2";
-	d2 = 2
+	d2 = 2;
+	icon_state = "0-2"
 	},
 /obj/structure/cable{
 	d1 = 2;
@@ -33835,17 +33835,6 @@
 	},
 /turf/simulated/floor/wood,
 /area/crew_quarters/bar)
-"brg" = (
-/obj/structure/chair/wood/wings{
-	dir = 8;
-	icon_state = "wooden_chair_wings";
-	tag = "icon-wooden_chair_wings (WEST)"
-	},
-/obj/effect/landmark/start{
-	name = "Civilian"
-	},
-/turf/simulated/floor/wood,
-/area/crew_quarters/bar)
 "brh" = (
 /obj/structure/disposalpipe/segment,
 /obj/structure/table/wood,
@@ -34690,29 +34679,6 @@
 "bte" = (
 /turf/simulated/wall,
 /area/hallway/primary/starboard/east)
-"btf" = (
-/obj/structure/chair/wood/wings{
-	dir = 4;
-	icon_state = "wooden_chair_wings";
-	tag = "icon-wooden_chair_wings (EAST)"
-	},
-/obj/effect/landmark/start{
-	name = "Civilian"
-	},
-/turf/simulated/floor/wood,
-/area/crew_quarters/bar)
-"btg" = (
-/obj/item/reagent_containers/food/condiment/peppermill{
-	pixel_x = 2;
-	pixel_y = 6
-	},
-/obj/structure/table/wood,
-/obj/item/reagent_containers/food/condiment/saltshaker{
-	pixel_x = -2;
-	pixel_y = 4
-	},
-/turf/simulated/floor/wood,
-/area/crew_quarters/bar)
 "bth" = (
 /obj/structure/table/wood,
 /obj/item/paper,
@@ -35397,11 +35363,6 @@
 	},
 /turf/simulated/floor/carpet,
 /area/crew_quarters/mrchangs)
-"buN" = (
-/obj/structure/table/wood,
-/obj/item/candle,
-/turf/simulated/floor/wood,
-/area/crew_quarters/bar)
 "buO" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -37377,14 +37338,6 @@
 	},
 /turf/simulated/wall,
 /area/quartermaster/office)
-"byD" = (
-/obj/structure/chair/wood/wings{
-	dir = 4;
-	icon_state = "wooden_chair_wings";
-	tag = "icon-wooden_chair_wings (EAST)"
-	},
-/turf/simulated/floor/wood,
-/area/crew_quarters/bar)
 "byE" = (
 /obj/machinery/atmospherics/unary/vent_pump/on{
 	dir = 1
@@ -89660,8 +89613,8 @@
 	},
 /obj/effect/spawner/window/reinforced,
 /obj/structure/cable{
-	icon_state = "0-4";
-	d2 = 4
+	d2 = 4;
+	icon_state = "0-4"
 	},
 /obj/structure/cable{
 	d1 = 4;
@@ -125070,10 +125023,10 @@ aZR
 bkM
 bmr
 brT
-btf
-btf
 bmq
-byD
+bmq
+bmq
+bmq
 bmq
 bmq
 aUS
@@ -125327,10 +125280,10 @@ boc
 bkP
 bmr
 brV
-btg
-bqi
 bmq
-buN
+bmq
+bmq
+bmq
 bmq
 aVG
 aUS
@@ -125584,10 +125537,10 @@ bnQ
 bkO
 bmr
 bmM
-brg
-brg
 bmq
-bqk
+bmq
+bmq
+bmq
 bmq
 bJQ
 aUS
