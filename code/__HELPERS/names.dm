@@ -38,7 +38,7 @@ GLOBAL_VAR(religion_name)
 
 /proc/set_station_name(newname)
 	GLOB.station_name = newname
-	if(SSticker.current_state == GAME_STATE_PLAYING)
+	if(SSticker.current_state >= GAME_STATE_PLAYING)
 		world.name = "[config.server_name]: [newname]"
 
 /proc/new_station_name()

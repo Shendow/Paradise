@@ -123,7 +123,7 @@
 	load_admins(run_async=TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Reload Admins") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-	if(sync_peers)
+	if(sync_peers == "Yes")
 		world.msg_peers("reload_admins")
 
 /client/proc/print_jobban_old()
