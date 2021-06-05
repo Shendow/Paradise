@@ -42,6 +42,9 @@ GLOBAL_LIST_INIT(map_transition_config, list(CC_TRANSITION_CONFIG))
 		// dumb and hardcoded but I don't care~
 		config.server_name += " #[(world.port % 1000) / 100]"
 
+	if(config.server_name)
+		world.name = config.server_name
+
 	GLOB.timezoneOffset = text2num(time2text(0, "hh")) * 36000
 
 	startup_procs() // Call procs that need to occur on startup (Generate lists, load MOTD, etc)
@@ -81,7 +84,7 @@ GLOBAL_LIST_EMPTY(world_topic_handlers)
 
 /world/Topic(T, addr, master, key)
 	TGS_TOPIC
-	log_misc("WORLD/TOPIC: \"[T]\", from:[addr], master:[master], key:[key]")
+	log_topic("\"[T]\", from:[addr], master:[master], key:[key]")
 
 	// Handle spam prevention
 	if(!GLOB.world_topic_spam_prevention_handlers[address])
@@ -190,6 +193,7 @@ GLOBAL_LIST_EMPTY(world_topic_handlers)
 	config.load("config/game_options.txt","game_options")
 	config.loadsql("config/dbconfig.txt")
 	config.loadoverflowwhitelist("config/ofwhitelist.txt")
+	config.loadpeerservers("config/servers.txt")
 	config.load_rank_colour_map()
 	// apply some settings from config..
 
@@ -251,6 +255,7 @@ GLOBAL_LIST_EMPTY(world_topic_handlers)
 	GLOB.tgui_log = "[GLOB.log_directory]/tgui.log"
 	GLOB.http_log = "[GLOB.log_directory]/http.log"
 	GLOB.sql_log = "[GLOB.log_directory]/sql.log"
+	GLOB.topic_log = "[GLOB.log_directory]/topic.log"
 	start_log(GLOB.world_game_log)
 	start_log(GLOB.world_href_log)
 	start_log(GLOB.world_runtime_log)
@@ -258,6 +263,7 @@ GLOBAL_LIST_EMPTY(world_topic_handlers)
 	start_log(GLOB.tgui_log)
 	start_log(GLOB.http_log)
 	start_log(GLOB.sql_log)
+	start_log(GLOB.topic_log)
 
 	// This log follows a special format and this path should NOT be used for anything else
 	GLOB.runtime_summary_log = "data/logs/runtime_summary.log"
@@ -274,6 +280,66 @@ GLOBAL_LIST_EMPTY(world_topic_handlers)
 	var/F = file("data/logpath.txt")
 	fdel(F)
 	F << GLOB.log_directory
+
+/**
+  * Sends a world Topic to all peer servers as defined in config/servers.txt
+  *
+  * The responses are discarded
+  * Arguments:
+  * * topic_key - The topic key corresponding to a world topic handler
+  * * message - The list of parameters to pass to the handler
+  */
+/world/proc/msg_peers(topic_key, list/message)
+	spawn()
+		for(var/peer_name in config.peer_servers)
+			msg_peer_server(peer_name, topic_key, message)
+
+/**
+  * Sends a world Topic to all peer servers as defined in config/servers.txt
+  *
+  * The responses are compiled in an assoc list (server_name => result)
+  * after each respective Export is done sleeping
+  * Arguments:
+  * * topic_key - The topic key corresponding to a world topic handler
+  * * message - The list of parameters to pass to the handler
+  */
+/world/proc/msg_peers_and_wait(topic_key, list/message)
+	var/start = world.time
+
+	var/list/result = list()
+	for(var/peer_name in config.peer_servers)
+		result[peer_name] = msg_peer_server(peer_name, topic_key, message)
+
+	UNTIL((length(result) == length(config.peer_servers)) || ((world.time - start) >= 5 SECONDS))
+	return result
+
+/**
+  * Sends a world Topic to a peer server as defined in config/servers.txt
+  *
+  * The response is returned after Export is done sleeping
+  * Arguments:
+  * * peer_name - The name of the peer server
+  * * topic_key - The topic key corresponding to a world topic handler
+  * * message - The list of parameters to pass to the handler
+  */
+/world/proc/msg_peer_server(peer_name, topic_key, list/message)
+	var/list/peer = config.peer_servers[peer_name]
+	if(!peer)
+		log_world("Tried to message unknown peer server: [peer_name]")
+		return
+
+	var/address = peer["address"]
+	var/payload = message ? message.Copy() : list()
+	payload["key"] = peer["password"]
+
+	var/result = world.Export("[address]?[topic_key]&[list2params(payload)]")
+	if(result)
+		try
+			var/list/decoded = json_decode(result)
+			if(islist(decoded))
+				result = decoded
+		catch
+	return result
 
 /world/Del()
 	rustg_close_async_http_client() // Close the HTTP client. If you dont do this, youll get phantom threads which can crash DD from memory access violations

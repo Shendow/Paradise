@@ -237,6 +237,9 @@
 		greeting += "<br><br>To celebrate, choose a random crewmate on the Manifest and give them a gift!"
 	return greeting
 
+/datum/holiday/xmas/getStationPrefix()
+	return pick("Christmas", "Cozy", "Festive", "Frosty", "Gift-Wrapped", "Jolly", "Merry")
+
 /datum/holiday/boxing
 	name = "Boxing Day"
 	begin_day = 26

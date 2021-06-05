@@ -1,6 +1,7 @@
 GLOBAL_REAL(config, /datum/configuration)
 
 GLOBAL_VAR(host)
+GLOBAL_VAR(station_name)
 GLOBAL_VAR(join_motd)
 GLOBAL_VAR(join_tos)
 GLOBAL_VAR_INIT(game_version, "ParaCode")

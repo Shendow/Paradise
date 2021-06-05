@@ -32,50 +32,54 @@ GLOBAL_VAR(religion_name)
 	return capitalize(name)
 
 /proc/station_name()
-	return SSmapping.map_datum.fluff_name
+	if(!GLOB.station_name)
+		set_station_name(new_station_name())
+	return GLOB.station_name
+
+/proc/set_station_name(newname)
+	GLOB.station_name = newname
+	if(SSticker.current_state == GAME_STATE_PLAYING)
+		world.name = "[config.server_name]: [newname]"
 
 /proc/new_station_name()
-	var/random = rand(1,5)
-	var/name = ""
-	var/new_station_name = ""
+	var/id_number_type = rand(1, 5)
+	var/list/result = list()
 
-	//Rare: Pre-Prefix
+	// Rare: Prefix
 	if(prob(10))
-		name = pick("Imperium", "Heretical", "Cuban", "Psychic", "Elegant", "Common", "Uncommon", "Rare", "Unique", "Houseruled", "Religious", "Atheist", "Traditional", "Houseruled", "Mad", "Super", "Ultra", "Secret", "Top Secret", "Deep", "Death", "Zybourne", "Central", "Main", "Government", "Uoi", "Fat", "Automated", "Experimental", "Augmented")
-		new_station_name = name + " "
-		name = ""
+		result += pick(strings(STATION_NAME_STRINGS, "prefix"))
 
-	// Prefix
+	// Name
+	var/has_name = FALSE
 	for(var/holiday_name in SSholiday.holidays)
-		if(holiday_name == "Friday the 13th")
-			random = 13
 		var/datum/holiday/holiday = SSholiday.holidays[holiday_name]
-		name = holiday.getStationPrefix()
-		//get normal name
-	if(!name)
-		name = pick("", "Stanford", "Dorf", "Alium", "Prefix", "Clowning", "Aegis", "Ishimura", "Scaredy", "Death-World", "Mime", "Honk", "Rogue", "MacRagge", "Ultrameens", "Safety", "Paranoia", "Explosive", "Neckbear", "Donk", "Muppet", "North", "West", "East", "South", "Slant-ways", "Widdershins", "Rimward", "Expensive", "Procreatory", "Imperial", "Unidentified", "Immoral", "Carp", "Ork", "Pete", "Control", "Nettle", "Aspie", "Class", "Crab", "Fist","Corrogated","Skeleton","Race", "Fatguy", "Gentleman", "Capitalist", "Communist", "Bear", "Beard", "Derp", "Space", "Spess", "Star", "Moon", "System", "Mining", "Neckbeard", "Research", "Supply", "Military", "Orbital", "Battle", "Science", "Asteroid", "Home", "Production", "Transport", "Delivery", "Extraplanetary", "Orbital", "Correctional", "Robot", "Hats", "Pizza")
-	if(name)
-		new_station_name += name + " "
+		if(istype(holiday, /datum/holiday/friday_thirteenth))
+			id_number_type = 13
+		result += holiday.getStationPrefix()
+		has_name = TRUE
+
+	if(!has_name)
+		result += pick(strings(STATION_NAME_STRINGS, "name"))
 
 	// Suffix
-	name = pick("Station", "Fortress", "Frontier", "Suffix", "Death-trap", "Space-hulk", "Lab", "Hazard","Spess Junk", "Fishery", "No-Moon", "Tomb", "Crypt", "Hut", "Monkey", "Bomb", "Trade Post", "Fortress", "Village", "Town", "City", "Edition", "Hive", "Complex", "Base", "Facility", "Depot", "Outpost", "Installation", "Drydock", "Observatory", "Array", "Relay", "Monitor", "Platform", "Construct", "Hangar", "Prison", "Center", "Port", "Waystation", "Factory", "Waypoint", "Stopover", "Hub", "HQ", "Office", "Object", "Fortification", "Colony", "Planet-Cracker", "Roost", "Fat Camp")
-	new_station_name += name + " "
+	result += pick(strings(STATION_NAME_STRINGS, "suffix"))
 
 	// ID Number
-	switch(random)
+	switch(id_number_type)
 		if(1)
-			new_station_name += "[rand(1, 99)]"
+			result += "[rand(1, 99)]"
 		if(2)
-			new_station_name += pick("Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta", "Iota", "Kappa", "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi", "Rho", "Sigma", "Tau", "Upsilon", "Phi", "Chi", "Psi", "Omega")
+			result += pick(GLOB.greek_letters)
 		if(3)
-			new_station_name += pick("II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX")
+			result += "\Roman[rand(1, 99)]"
 		if(4)
-			new_station_name += pick("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu")
+			result += pick(GLOB.phonetic_alphabet)
 		if(5)
-			new_station_name += pick("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen")
-		if(13)
-			new_station_name += pick("13","XIII","Thirteen")
-	return new_station_name
+			result += pick(GLOB.numbers_as_words)
+		if(13) // Only on Friday 13th
+			result += pick("13", "XIII", "Thirteen")
+
+	return jointext(result, " ")
 
 GLOBAL_VAR(syndicate_name)
 /proc/syndicate_name()

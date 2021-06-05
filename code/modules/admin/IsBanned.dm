@@ -1,11 +1,20 @@
 //Blocks an attempt to connect before even creating our client datum thing.
 /world/IsBanned(key, address, computer_id, type, check_ipintel = TRUE)
-
 	if(!key || !address || !computer_id)
 		log_adminwarn("Failed Login (invalid data): [key] [address]-[computer_id]")
 		// The nested ternaries are needed here
 		INVOKE_ASYNC(GLOBAL_PROC, .proc/log_connection, (ckey(key) || ""), (address || ""), (computer_id || ""), CONNECTION_TYPE_DROPPED_INVALID)
 		return list("reason"="invalid login data", "desc"="Error: Could not check ban status, please try again. Error message: Your computer provided invalid or blank information to the server on connection (BYOND Username, IP, and Computer ID). Provided information for reference: Username: '[key]' IP: '[address]' Computer ID: '[computer_id]'. If you continue to get this error, please restart byond or contact byond support.")
+
+	var/ckey = ckey(key)
+
+	// Make sure we aren't connected on any of the peer servers
+	var/list/connected_elsewhere = world.msg_peers_and_wait("ckey_connected", list("ckey" = ckey))
+	for(var/peer_name in connected_elsewhere)
+		if(connected_elsewhere[peer_name]["connected"])
+			log_adminwarn("Failed Login (connected elsewhere): [key] [address]-[computer_id]")
+			INVOKE_ASYNC(GLOBAL_PROC, .proc/log_connection, ckey(key), address, computer_id, CONNECTION_TYPE_DROPPED_ELSEWHERE)
+			return list("reason"="connected elsewhere", "desc"="\nReason: Simultaneous sessions on different servers using one account are not allowed. Please disconnect and try again.")
 
 	if(type == "world")
 		return ..() //shunt world topic banchecks to purely to byond's internal ban system
@@ -16,7 +25,6 @@
 		return list("reason"="invalid login data", "desc"="Error: Could not check ban status, Please try again. Error message: Your computer provided an invalid Computer ID.")
 
 	var/admin = 0
-	var/ckey = ckey(key)
 
 	var/client/C = GLOB.directory[ckey]
 	if (C && ckey == C.ckey && computer_id == C.computer_id && address == C.address)
@@ -42,7 +50,6 @@
 			mistakemessage = "\nIf you have to use one, request whitelisting at:  [config.banappeals]"
 		INVOKE_ASYNC(GLOBAL_PROC, .proc/log_connection, ckey(key), address, computer_id, CONNECTION_TYPE_DROPPED_IPINTEL)
 		return list("reason"="using proxy or vpn", "desc"="\nReason: Proxies/VPNs are not allowed here. [mistakemessage]")
-
 
 	if(config.ban_legacy_system)
 		//Ban Checking

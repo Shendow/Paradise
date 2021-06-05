@@ -83,12 +83,6 @@ SUBSYSTEM_DEF(mapping)
 
 	GLOB.ghostteleportlocs = sortAssoc(GLOB.ghostteleportlocs)
 
-	// World name
-	if(config && config.server_name)
-		world.name = "[config.server_name]: [station_name()]"
-	else
-		world.name = station_name()
-
 	return ..()
 
 // Do not confuse with seedRuins()

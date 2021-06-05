@@ -57,6 +57,8 @@ SUBSYSTEM_DEF(ticker)
 	var/ticker_going = TRUE
 	/// Gamemode result (For things like shadowlings or nukies which can end multiple ways)
 	var/mode_result = "undefined"
+	/// Simplified gamemode result for sending to peers
+	var/mode_result_id = 0
 	/// Server end state (Did we end properly or reboot or nuke or what)
 	var/end_state = "undefined"
 	/// Time the real reboot kicks in
@@ -250,8 +252,12 @@ SUBSYSTEM_DEF(ticker)
 			qdel(S)
 
 	SSdbcore.SetRoundStart()
-	to_chat(world, "<span class='darkmblue'><B>Enjoy the game!</B></span>")
+	to_chat(world, "<span class='darkmblue'><B>Welcome to [station_name()], enjoy your stay!</B></span>")
 	SEND_SOUND(world, sound('sound/AI/welcome.ogg'))
+	if(config.server_name)
+		world.name = "[config.server_name]: [station_name()]"
+	else
+		world.name = station_name()
 
 	if(SSholiday.holidays)
 		to_chat(world, "<span class='darkmblue'>and...</span>")
@@ -477,6 +483,18 @@ SUBSYSTEM_DEF(ticker)
 
 	mode.declare_completion()//To declare normal completion.
 
+	// The gamemode didn't set a mode result ID so try to infer one
+	if(!mode_result_id)
+		if(mode.station_was_nuked)
+			mode_result_id = STATION_NUKED
+		else if(SSshuttle.emergency.mode >= SHUTTLE_ENDGAME)
+			if(SSshuttle.emergency.is_hijacked())
+				mode_result_id = SHUTTLE_HIJACK
+			else
+				mode_result_id = SHUTTLE_EVAC
+
+	notify_peers_roundend()
+
 	//calls auto_declare_completion_* for all modes
 	for(var/handler in typesof(/datum/game_mode/proc))
 		if(findtext("[handler]","auto_declare_completion_"))
@@ -578,3 +596,52 @@ SUBSYSTEM_DEF(ticker)
 	sleep(sound_length)
 
 	world.Reboot()
+
+/datum/controller/subsystem/ticker/proc/notify_peers_roundend()
+	var/message
+	switch(mode_result_id)
+		if(BLOB_WIN)
+			message = "[station_name()] was overcome by an unknown biological outbreak, killing all crew on board. Don't let it happen to you! Remember, a clean work station is a safe work station."
+		if(BLOB_NUKE)
+			message = "[station_name()] is currently undergoing decontanimation after a controlled burst of radiation was used to remove a biological ooze. All employees were safely evacuated prior, and are enjoying a relaxing vacation."
+		if(BLOB_LOSS)
+			message = "[station_name()] is currently undergoing decontamination procedures after the destruction of a biological hazard. As a reminder, any crew members experiencing cramps or bloating should report immediately to security for incineration."
+		if(CULT_WIN)
+			message = "Company officials would like to clarify that [station_name()] was scheduled to be decommissioned following meteor damage earlier this year. Earlier reports of an unknowable eldritch horror were made in error."
+		if(CULT_LOSS)
+			message = "Following the dismantling of a restricted cult aboard [station_name()], we would like to remind all employees that worship outside of the Chapel is strictly prohibited, and cause for termination."
+		if(NUCLEAR_WIN)
+			message = "We would like to reassure all employees that the reports of a Syndicate-backed nuclear attack on [station_name()] are, in fact, a hoax. Have a secure day!"
+		if(NUCLEAR_KILLED)
+			message = "Repairs to [station_name()] are underway after an elite Syndicate death squad was wiped out by the crew."
+		if(NUCLEAR_SKIRMISH)
+			message = "A skirmish between security forces and Syndicate agents aboard [station_name()] ended with both sides bloodied but intact."
+		if(NUCLEAR_MISS)
+			message = "The Syndicate have bungled a terrorist attack targeting [station_name()], detonating a nuclear weapon in empty space nearby."
+		if(REVOLUTION_WIN)
+			message = "Company officials have reassured investors that despite a union led revolt aboard [station_name()] there will be no wage increases for workers."
+		if(REVOLUTION_LOSS)
+			message = "Security forces aboard [station_name()] quickly put down a misguided attempt at mutiny. Remember, unionizing is illegal!"
+		if(SHADOWLING_WIN)
+			message = "Company officials have reassured investors that the complete absence of light aboard [station_name()] was part of a power-saving initiative,	rejecting the presence of light-eating creatures aboard."
+		if(SHADOWLING_LOSS)
+			message = "Following the discovery of a fault aboard [station_name()]'s lighting circuits, we would like to remind all employees that light in the workplace is vital for productivity."
+		if(RAGINMAGES_LOSS)
+			message = "[station_name()] was the target of an unprecedented show of force by the Space Wizard Federation."
+		if(WIZARD_LOSS)
+			message = "Tensions have flared with the Space Wizard Federation following the death of one of their members aboard [station_name()]."
+		if(SHUTTLE_EVAC)
+			var/evac_reason = SSshuttle.emergency.request_reason
+			if(evac_reason == " Automatic Crew Transfer")
+				message = "The crew aboard [station_name()] have been evacuated as part of routine crew transfer."
+			else if(evac_reason)
+				message = "The crew aboard [station_name()] have been evacuated after transmitting the following distress beacon:\n\n[evac_reason]"
+			else
+				message = "The crew aboard [station_name()] have been evacuated amid unconfirmed reports of enemy activity."
+		if(SHUTTLE_HIJACK)
+			message = "During routine evacuation procedures, the emergency shuttle of [station_name()] had its navigation protocols corrupted and went off course, but was recovered shortly after."
+		if(STATION_NUKED)
+			message = "The self-destruct device aboard [station_name()] was activated for unknown reasons. Attempts to clone the Captain so they can be arrested and executed are underway."
+
+	if(message)
+		world.msg_peers("round_end", list("message" = message))

@@ -91,7 +91,8 @@
 	var/datum/announcement/priority/emergency_shuttle_recalled = new(0, new_sound = sound('sound/AI/shuttlerecalled.ogg'))
 
 	var/canRecall = TRUE //no bad condom, do not recall the crew transfer shuttle!
-
+	/// The reason for the latest request.
+	var/request_reason = null
 
 /obj/docking_port/mobile/emergency/register()
 	if(!..())
@@ -148,7 +149,7 @@
 		SSshuttle.emergencyLastCallLoc = null
 
 	emergency_shuttle_called.Announce("The emergency shuttle has been called. [redAlert ? "Red Alert state confirmed: Dispatching priority shuttle. " : "" ]It will arrive in [timeLeft(600)] minutes.[reason][SSshuttle.emergencyLastCallLoc ? "\n\nCall signal traced. Results can be viewed on any communications console." : "" ]")
-
+	request_reason = reason
 
 /obj/docking_port/mobile/emergency/cancel(area/signalOrigin)
 	if(!canRecall)

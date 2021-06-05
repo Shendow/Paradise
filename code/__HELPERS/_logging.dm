@@ -89,6 +89,10 @@ GLOBAL_PROTECT(log_end)
 	if(config.log_adminchat)
 		rustg_log_write(GLOB.world_game_log, "ADMINSAY: [speaker.simple_info_line()]: [html_decode(text)][GLOB.log_end]")
 
+/proc/log_globalsay(text, mob/speaker)
+	if(config.log_adminchat)
+		rustg_log_write(GLOB.world_game_log, "GLOBALSAY: [speaker.simple_info_line()]: [html_decode(text)][GLOB.log_end]")
+
 /proc/log_qdel(text)
 	rustg_log_write(GLOB.world_qdel_log, "QDEL: [text][GLOB.log_end]")
 
@@ -143,6 +147,9 @@ GLOBAL_PROTECT(log_end)
 /proc/log_sql(text)
 	rustg_log_write(GLOB.sql_log, "[text][GLOB.log_end]")
 	SEND_TEXT(world.log, text) // Redirect it to DD too
+
+/proc/log_topic(text)
+	rustg_log_write(GLOB.topic_log, "WORLD/TOPIC: [text][GLOB.log_end]")
 
 // A logging proc that only outputs after setup is done, to
 // help devs test initialization stuff that happens a lot

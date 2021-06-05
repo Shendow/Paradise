@@ -528,7 +528,7 @@ CREATE TABLE `SS13_connection_log` (
   `ckey` varchar(32) NOT NULL,
   `ip` varchar(32) NOT NULL,
   `computerid` varchar(32) NOT NULL,
-  `result` ENUM('ESTABLISHED','DROPPED - IPINTEL','DROPPED - BANNED','DROPPED - INVALID') NOT NULL DEFAULT 'ESTABLISHED' COLLATE 'utf8mb4_general_ci',
+  `result` ENUM('ESTABLISHED','DROPPED - IPINTEL','DROPPED - BANNED','DROPPED - INVALID','DROPPED - ELSEWHERE') NOT NULL DEFAULT 'ESTABLISHED' COLLATE 'utf8mb4_general_ci',
   PRIMARY KEY (`id`),
   KEY `ckey` (`ckey`),
   KEY `ip` (`ip`),

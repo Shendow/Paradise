@@ -363,7 +363,7 @@
 #define INVESTIGATE_BOMB "bombs"
 
 // The SQL version required by this version of the code
-#define SQL_VERSION 23
+#define SQL_VERSION 24
 
 // Vending machine stuff
 #define CAT_NORMAL 1
@@ -489,3 +489,26 @@
 
 /// Send to the mentor Discord webhook
 #define DISCORD_WEBHOOK_MENTOR "MENTOR"
+
+/// File name for station name strings
+#define STATION_NAME_STRINGS "station_name.json"
+
+// Endgame results
+#define BLOB_WIN 1
+#define BLOB_NUKE 2
+#define BLOB_LOSS 3
+#define CULT_WIN 4
+#define CULT_LOSS 5
+#define NUCLEAR_WIN 6
+#define NUCLEAR_KILLED 7
+#define NUCLEAR_SKIRMISH 8
+#define NUCLEAR_MISS 9
+#define REVOLUTION_WIN 10
+#define REVOLUTION_LOSS 11
+#define SHADOWLING_WIN 12
+#define SHADOWLING_LOSS 13
+#define RAGINMAGES_LOSS 14
+#define WIZARD_LOSS 15
+#define SHUTTLE_EVAC 16
+#define SHUTTLE_HIJACK 17
+#define STATION_NUKED 18

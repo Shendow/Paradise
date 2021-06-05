@@ -38,7 +38,8 @@ GLOBAL_DATUM_INIT(captain_announcement, /datum/announcement/minor, new(do_newsca
 	pda = /obj/item/pda/captain
 	backpack_contents = list(
 		/obj/item/storage/box/ids = 1,
-		/obj/item/melee/classic_baton/telescopic = 1
+		/obj/item/melee/classic_baton/telescopic = 1,
+		/obj/item/station_charter = 1
 	)
 	implants = list(/obj/item/implant/mindshield)
 	backpack = /obj/item/storage/backpack/captain

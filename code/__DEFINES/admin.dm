@@ -88,3 +88,5 @@
 #define CONNECTION_TYPE_DROPPED_BANNED "DROPPED - BANNED"
 /// Client was disallowed due to invalid data
 #define CONNECTION_TYPE_DROPPED_INVALID "DROPPED - INVALID"
+/// Client was disallowed due to being connected elsewhere
+#define CONNECTION_TYPE_DROPPED_ELSEWHERE "DROPPED - ELSEWHERE"

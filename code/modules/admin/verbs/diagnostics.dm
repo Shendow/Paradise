@@ -113,12 +113,18 @@
 	if(!check_rights(R_SERVER))
 		return
 
+	var/sync_peers = alert(usr, "Would you like to reload admins on peer servers?", "Reload Admins", "Yes", "No", "Cancel")
+	if(sync_peers == "Cancel")
+		return
+
 	message_admins("[key_name_admin(usr)] has manually reloaded admins")
 	log_admin("[key_name(usr)] has manually reloaded admins")
 
 	load_admins(run_async=TRUE)
 	SSblackbox.record_feedback("tally", "admin_verb", 1, "Reload Admins") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
+	if(sync_peers)
+		world.msg_peers("reload_admins")
 
 /client/proc/print_jobban_old()
 	set name = "Print Jobban Log"

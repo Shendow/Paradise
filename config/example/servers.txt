@@ -1,0 +1,15 @@
+########################################################################################
+# PEER SERVER DEFINES                                                                  #
+#                                                                                      #
+# Purpose: List of peer servers for cross-server communication.                        #
+# How to use:                                                                          #
+# - If you host only one server, you can ignore this.                                  #
+# - Otherwise, proceed. The list should only include other servers,                    #
+#   not the one running this config file.                                              #
+# - The used format is: IP:port - Server Comms Password - Server Name                  #
+# - Lines starting by # are ignored.                                                   #
+########################################################################################
+
+# EXAMPLE BELOW. COPY PASTE, REMOVE THE # AND FILL THE FIELDS APPROPRIATELY.
+# 127.0.0.1:6666 - CommsPasswordA - My Server A
+# 127.0.0.1:6667 - CommsPasswordB - My Server B

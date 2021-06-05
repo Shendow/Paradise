@@ -278,6 +278,9 @@
 	// Enable map voting
 	var/map_voting_enabled = FALSE
 
+	/// List of peer servers for cross-server communication.
+	var/list/peer_servers = list()
+
 /datum/configuration/New()
 	for(var/T in subtypesof(/datum/game_mode))
 		var/datum/game_mode/M = T
@@ -907,6 +910,28 @@
 			continue
 
 		config.overflow_whitelist += t
+
+/datum/configuration/proc/loadpeerservers(filename)
+	for(var/line in file2list(filename))
+		if(!line)
+			continue
+
+		line = trim(line)
+		if(!length(line) || line[1] == "#")
+			continue
+
+		var/list/expl = splittext(line, " - ")
+		if(length(expl) != 3)
+			log_config("Malformed peer server definition: '[line]'")
+			continue
+
+		var/address = expl[1] // The IP and port of the peer server
+		var/password = expl[2] // The password of the peer server to authentify incoming Topics
+		var/name = expl[3] // The clean name of the peer server
+		if(name == config.server_name)
+			continue // We shouldn't be a peer to ourselves
+
+		config.peer_servers[name] = list("address" = address, "password" = password)
 
 /datum/configuration/proc/pick_mode(mode_name)
 	for(var/T in subtypesof(/datum/game_mode))
