@@ -219,11 +219,9 @@
 	icon = 'icons/obj/watertank.dmi'
 	icon_state = "atmos_nozzle"
 	item_state = "nozzleatmos"
-	safety = 0
-	max_water = 200
-	power = 8
-	precision = 1
-	cooling_power = 5
+	safety = FALSE
+	water_capacity = 200
+	precision = TRUE
 	w_class = WEIGHT_CLASS_HUGE
 	flags = NODROP //Necessary to ensure that the nozzle and tank never seperate
 	var/obj/item/watertank/tank
@@ -236,7 +234,7 @@
 	if(check_tank_exists(parent_tank, src))
 		tank = parent_tank
 		reagents = tank.reagents
-		max_water = tank.volume
+		water_capacity = tank.volume
 		loc = tank
 	return
 
@@ -276,8 +274,9 @@
 		..()
 		return
 	var/Adj = user.Adjacent(target)
-	if(Adj)
-		AttemptRefill(target, user)
+	#warn TODO: refilling
+	// if(Adj)
+	// 	AttemptRefill(target, user)
 	if(nozzle_mode == NANOFROST)
 		if(Adj)
 			return //Safety check so you don't blast yourself trying to refill your tank

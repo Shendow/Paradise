@@ -14,7 +14,6 @@
 	reagent_state = LIQUID
 	color = "#0064C8" // rgb: 0, 100, 200
 	taste_description = "water"
-	var/cooling_temperature = 2
 	process_flags = ORGANIC | SYNTHETIC
 	drink_icon = "glass_clear"
 	drink_name = "Glass of Water"
